@@ -9,6 +9,8 @@ object TaskDataSource {
     fun getList() = list.toList()
 
     fun insertTask(task: Task) {
+
+
         if (task.id == 0) {
             list.add(task.copy(id = list.size + 1))
         } else {

@@ -1,11 +1,9 @@
 package com.example.bootcamptodolist.ui
 
 import android.app.Activity
-import android.opengl.Visibility
 import android.os.Bundle
-import android.util.Log
-import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bootcamptodolist.database.DatabaseTask
 import com.example.bootcamptodolist.databinding.ActivityAddTaskBinding
 import com.example.bootcamptodolist.datasource.TaskDataSource
 import com.example.bootcamptodolist.extensions.format
@@ -25,7 +23,7 @@ class AddTaskActivity : AppCompatActivity() {
         binding = ActivityAddTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if(intent.hasExtra(TASK_ID)){
+        if (intent.hasExtra(TASK_ID)) {
             val taskId = intent.getIntExtra(TASK_ID, 0)
             TaskDataSource.findId(taskId)?.let {
                 binding.tilTitle.text = it.title
@@ -72,7 +70,12 @@ class AddTaskActivity : AppCompatActivity() {
                 time = binding.tilHora.text,
                 id = intent.getIntExtra(TASK_ID, 0)
             )
-            TaskDataSource.insertTask(task)
+
+            Thread{
+//                DatabaseTask.getDatabase(this@AddTaskActivity)?.taskDao()?.insertTask(task)
+                TaskDataSource.insertTask(task)
+
+            }.start()
 
             setResult(Activity.RESULT_OK)
             finish()

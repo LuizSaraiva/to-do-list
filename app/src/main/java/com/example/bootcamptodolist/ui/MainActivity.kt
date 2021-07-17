@@ -5,8 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.bootcamptodolist.database.DatabaseTask
 import com.example.bootcamptodolist.databinding.ActivityMainBinding
 import com.example.bootcamptodolist.datasource.TaskDataSource
+import com.example.bootcamptodolist.model.Task
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,9 +22,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.rvMain.adapter = adapter
-        loadList()
 
         insertListeners()
+
+        loadList()
+
     }
 
     private fun insertListeners() {
@@ -33,13 +37,14 @@ class MainActivity : AppCompatActivity() {
             )
 
             adapter.listenerEdit = {
+
                 val intent = Intent(this@MainActivity, AddTaskActivity::class.java)
                 intent.putExtra(AddTaskActivity.TASK_ID, it.id)
                 startActivity(intent)
             }
 
             adapter.listenerDelete = {
-                TaskDataSource.deleteTask(it)
+
                 loadList()
             }
 
@@ -54,14 +59,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadList() {
-        val list = TaskDataSource.getList()
-        binding.includeEmptyState.emptyState.visibility = if (list.isEmpty())
-             View.VISIBLE else View.GONE
+        Thread {
+            val list = TaskDataSource.getList()
 
-        binding.rvMain.visibility = if (list.isEmpty())
-            View.GONE else View.VISIBLE
+            //val list = DatabaseTask.getDatabase(this@MainActivity)?.taskDao()?.getAll() ?: mutableListOf()
 
-        adapter.submitList(list)
+            runOnUiThread {
+                binding.includeEmptyState.emptyState.visibility = if (list.isEmpty())
+                    View.VISIBLE else View.GONE
+
+                binding.rvMain.visibility = if (list.isEmpty())
+                    View.GONE else View.VISIBLE
+
+                adapter.submitList(list)
+            }
+        }.start()
     }
 
     companion object {
