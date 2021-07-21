@@ -10,9 +10,8 @@ import com.example.bootcamptodolist.model.Task
 
 
 @Database(
-    entities = arrayOf(Task::class),
+    entities = [Task::class],
     version = 2)
-
 abstract class DatabaseTask : RoomDatabase(){
     abstract fun taskDao(): TaskDao
 
