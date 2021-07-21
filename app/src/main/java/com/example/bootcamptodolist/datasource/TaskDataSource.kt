@@ -1,27 +1,27 @@
 package com.example.bootcamptodolist.datasource
 
+import com.example.bootcamptodolist.database.DatabaseTask
 import com.example.bootcamptodolist.model.Task
+import kotlin.concurrent.thread
 
-object TaskDataSource {
-
-    private val list = arrayListOf<Task>()
-
-    fun getList() = list.toList()
+class TaskDataSource(private val databaseTask: DatabaseTask) {
+    fun getList() = databaseTask.taskDao().getAll()
 
     fun insertTask(task: Task) {
-
-
-        if (task.id == 0) {
-            list.add(task.copy(id = list.size + 1))
-        } else {
-            list.remove(task)
-            list.add(task)
+        thread(true) {
+            databaseTask.taskDao().insertTask(task)
         }
     }
 
-    fun findId(taskId: Int) = list.find { it.id == taskId }
+    /*
+     * Consultas no banco de dados com retorno do tipo LiveData<T> não necessitam que seja criada
+     * uma nova thread, pois elas naturalmente já são efetuadas fora da thread principal (UI).
+     */
+    fun findId(taskId: Int) = databaseTask.taskDao().findById(taskId)
 
     fun deleteTask(task: Task) {
-        list.remove(task)
+        thread(true) {
+            databaseTask.taskDao().deleteTask(task)
+        }
     }
 }

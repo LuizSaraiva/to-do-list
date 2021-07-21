@@ -13,10 +13,11 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import java.util.*
+import kotlin.concurrent.thread
 
 class AddTaskActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityAddTaskBinding
+    private val taskDataSource by lazy { TaskDataSource(DatabaseTask.getDatabase(this)!!) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,11 +26,10 @@ class AddTaskActivity : AppCompatActivity() {
 
         if (intent.hasExtra(TASK_ID)) {
             val taskId = intent.getIntExtra(TASK_ID, 0)
-            TaskDataSource.findId(taskId)?.let {
+            taskDataSource.findId(taskId).observe(this) {
                 binding.tilTitle.text = it.title
                 binding.tilData.text = it.date
                 binding.tilHora.text = it.time
-
                 binding.btnNewTask.text = "Salvar alteracao"
             }
         }
@@ -70,13 +70,9 @@ class AddTaskActivity : AppCompatActivity() {
                 time = binding.tilHora.text,
                 id = intent.getIntExtra(TASK_ID, 0)
             )
-
-            Thread{
-//                DatabaseTask.getDatabase(this@AddTaskActivity)?.taskDao()?.insertTask(task)
-                TaskDataSource.insertTask(task)
-
-            }.start()
-
+            thread(true) {
+                taskDataSource.insertTask(task)
+            }
             setResult(Activity.RESULT_OK)
             finish()
         }
