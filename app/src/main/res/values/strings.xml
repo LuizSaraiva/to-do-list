@@ -13,4 +13,8 @@
     <string name="cancel">Cancelar</string>
     <string name="create_task">Criar tarefa</string>
     <string name="required_fields">Preenche os campos obrigatorios!</string>
+    <string name="resume">Resumo</string>
+    <string name="description">Descrição</string>
+    <string name="sample_text_resume">Sample text resume</string>
+    <string name="sucess">Cadastrado com sucesso!</string>
 </resources>

@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tv_title"
@@ -33,6 +33,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
             tools:text="18/01/2021 18:00" />
+
+        <TextView
+            android:id="@+id/tv_resume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:text="@string/sample_text_resume"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_date_time" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_more"

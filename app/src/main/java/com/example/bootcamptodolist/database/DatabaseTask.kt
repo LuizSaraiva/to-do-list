@@ -8,7 +8,7 @@ import com.example.bootcamptodolist.dao.DaoTask
 import com.example.bootcamptodolist.model.Task
 
 
-@Database(entities = arrayOf(Task::class), version = 2)
+@Database(entities = arrayOf(Task::class), version = 3)
 
 abstract class DatabaseTask : RoomDatabase() {
 

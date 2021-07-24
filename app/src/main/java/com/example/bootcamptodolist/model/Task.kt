@@ -9,5 +9,7 @@ data class Task(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "date") val date: String,
     @ColumnInfo(name = "time") val time: String,
+    @ColumnInfo(name = "resume") val resume:String,
+    @ColumnInfo(name = "description") val description:String,
     @PrimaryKey(autoGenerate = true) var id: Int = 0
 )

@@ -35,7 +35,8 @@ class AddTaskActivity : AppCompatActivity() {
                 binding.tilTitle.text = it.title
                 binding.tilData.text = it.date
                 binding.tilHora.text = it.time
-
+                binding.tilResume.text = it.resume
+                binding.tilDescription.text = it.description
                 binding.btnNewTask.text = getString(R.string.save)
             }
         }
@@ -74,11 +75,13 @@ class AddTaskActivity : AppCompatActivity() {
             val title = binding.tilTitle.text
             val date = binding.tilData.text
             val time = binding.tilHora.text
+            val resume = binding.tilResume.text
+            val description = binding.tilDescription.text
             val id = intent.getIntExtra(TASK_ID, 0)
 
 
             if (title.isNotEmpty() && date.isNotEmpty()) {
-                val task = Task(title, date, time, id)
+                val task = Task(title, date, time, resume, description, id)
 
                 if (intent.hasExtra(TASK_ID)) {
                     Thread {
@@ -96,17 +99,23 @@ class AddTaskActivity : AppCompatActivity() {
                     }.start()
                 }
 
+                Toast.makeText(
+                    this@AddTaskActivity,
+                    getString(R.string.sucess),
+                    Toast.LENGTH_LONG
+                ).show()
+
                 setResult(Activity.RESULT_OK)
                 finish()
 
+            } else {
+
+                Toast.makeText(
+                    this@AddTaskActivity,
+                    getString(R.string.required_fields),
+                    Toast.LENGTH_LONG
+                ).show()
             }
-
-            Toast.makeText(
-                this@AddTaskActivity,
-                getString(R.string.required_fields),
-                Toast.LENGTH_LONG
-            ).show()
-
         }
 
         binding.btnCancel.setOnClickListener { finish() }

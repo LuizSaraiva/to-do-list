@@ -38,6 +38,7 @@ class AdapterTask : RecyclerView.Adapter<AdapterTask.ViewHolderTask>() {
         fun bind(task: Task) {
             binding.tvTitle.text = task.title
             binding.tvDateTime.text = "${task.date} ${task.time}"
+            binding.tvResume.text = task.resume
             binding.ivMore.setOnClickListener { showPopUp(task) }
         }
 
