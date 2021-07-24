@@ -4,17 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.bootcamptodolist.dao.TaskDao
+import com.example.bootcamptodolist.dao.DaoTask
 import com.example.bootcamptodolist.model.Task
 
 
+@Database(entities = arrayOf(Task::class), version = 2)
 
-@Database(
-    entities = arrayOf(Task::class),
-    version = 2)
+abstract class DatabaseTask : RoomDatabase() {
 
-abstract class DatabaseTask : RoomDatabase(){
-    abstract fun taskDao(): TaskDao
+    abstract fun daoTask(): DaoTask
 
     companion object {
 
@@ -22,17 +20,18 @@ abstract class DatabaseTask : RoomDatabase(){
 
         private var INSTANCE: DatabaseTask? = null
 
-        fun getDatabase(context: Context): DatabaseTask? {
+        fun getDatabase(context: Context): DatabaseTask {
 
-            if (INSTANCE == null) {
-                INSTANCE = Room.databaseBuilder(
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
                     context.applicationContext,
                     DatabaseTask::class.java,
                     DB_NAME
                 )
                     .build()
+                INSTANCE = instance
+                instance
             }
-            return INSTANCE
         }
     }
 }

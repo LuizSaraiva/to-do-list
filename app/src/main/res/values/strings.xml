@@ -3,4 +3,14 @@
     <string name="label_edit">Editar</string>
     <string name="label_delete">Deletar</string>
     <string name="you_dont_have_tasks">Ops! Você não possui\n nenhuma tarefa!</string>
+    <string name="item_delete">Item deletado</string>
+    <string name="new_task">Nova Tarefa</string>
+    <string name="save">Salvar</string>
+    <string name="update">Atualizado</string>
+    <string name="title">Titulo*</string>
+    <string name="date">Data*</string>
+    <string name="hour">Hora</string>
+    <string name="cancel">Cancelar</string>
+    <string name="create_task">Criar tarefa</string>
+    <string name="required_fields">Preenche os campos obrigatorios!</string>
 </resources>

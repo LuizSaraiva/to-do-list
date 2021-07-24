@@ -1,24 +1,24 @@
 package com.example.bootcamptodolist.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.WindowId
-import android.widget.EditText
 import android.widget.PopupMenu
-import android.widget.TextView
-import androidx.appcompat.view.menu.MenuView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bootcamptodolist.R
 import com.example.bootcamptodolist.databinding.ItemTaskBinding
 import com.example.bootcamptodolist.model.Task
 
-class AdapterTask : ListAdapter<Task, AdapterTask.ViewHolderTask>(DiffItemCallback()) {
+class AdapterTask : RecyclerView.Adapter<AdapterTask.ViewHolderTask>() {
+
+    private var listTask = listOf<Task>()
 
     var listenerEdit: (Task) -> Unit = {}
     var listenerDelete: (Task) -> Unit = {}
+
+    fun setData(listItem: List<Task>) {
+        listTask = listItem
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderTask {
         val inflater = LayoutInflater.from(parent.context)
@@ -27,8 +27,10 @@ class AdapterTask : ListAdapter<Task, AdapterTask.ViewHolderTask>(DiffItemCallba
     }
 
     override fun onBindViewHolder(holder: ViewHolderTask, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(listTask[position])
     }
+
+    override fun getItemCount(): Int = listTask.size
 
     inner class ViewHolderTask(private val binding: ItemTaskBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -46,17 +48,15 @@ class AdapterTask : ListAdapter<Task, AdapterTask.ViewHolderTask>(DiffItemCallba
             popupMenu.setOnMenuItemClickListener {
 
                 when (it.itemId) {
-                    R.id.action_edit -> listenerEdit(item)
+                    R.id.action_edit -> {
+                        listenerEdit(item)
+                    }
+
                     R.id.action_delete -> listenerDelete(item)
                 }
                 return@setOnMenuItemClickListener true
             }
             popupMenu.show()
         }
-    }
-
-    class DiffItemCallback : DiffUtil.ItemCallback<Task>() {
-        override fun areItemsTheSame(oldItem: Task, newItem: Task) = oldItem == newItem
-        override fun areContentsTheSame(oldItem: Task, newItem: Task) = oldItem.id == newItem.id
     }
 }

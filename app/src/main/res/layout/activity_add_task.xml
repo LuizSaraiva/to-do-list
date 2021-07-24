@@ -10,7 +10,7 @@
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_navigate"
-        app:title="Criar tarefa" />
+        app:title="@string/new_task" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_start"
@@ -32,7 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Titulo"
+        android:hint="@string/title"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="3dp"
-        android:hint="Data"
+        android:hint="@string/date"
         app:layout_constraintEnd_toStartOf="@id/til_hora"
         app:layout_constraintStart_toStartOf="@id/guideline_start"
         app:layout_constraintTop_toBottomOf="@id/til_title"
@@ -71,7 +71,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
-        android:hint="Hora"
+        android:hint="@string/hour"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:layout_constraintStart_toEndOf="@id/til_data"
         app:layout_constraintTop_toBottomOf="@id/til_data"
@@ -89,7 +89,7 @@
         android:id="@+id/btn_cancel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Cancelar"
+        android:text="@string/cancel"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:layout_constraintBottom_toTopOf="@id/btn_new_task"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -101,7 +101,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Criar tarefa"
+        android:text="@string/create_task"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"

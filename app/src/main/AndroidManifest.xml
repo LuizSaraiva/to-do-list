@@ -3,12 +3,14 @@
     package="com.example.bootcamptodolist">
 
     <application
+        android:name=".application.ApplicationTask"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BootcampToDoList">
+        <activity android:name=".Teste"></activity>
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,8 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.AddTaskActivity"></activity>
+        <activity android:name=".ui.AddTaskActivity" />
     </application>
 
 </manifest>

@@ -2,10 +2,12 @@ package com.example.bootcamptodolist.ui
 
 import android.app.Activity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bootcamptodolist.database.DatabaseTask
+import com.example.bootcamptodolist.R
 import com.example.bootcamptodolist.databinding.ActivityAddTaskBinding
-import com.example.bootcamptodolist.datasource.TaskDataSource
+import com.example.bootcamptodolist.application.ApplicationTask
+import com.example.bootcamptodolist.viewmodel.ViewModelTask
 import com.example.bootcamptodolist.extensions.format
 import com.example.bootcamptodolist.extensions.text
 import com.example.bootcamptodolist.model.Task
@@ -18,6 +20,10 @@ class AddTaskActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddTaskBinding
 
+    private val viewModel: ViewModelTask by lazy {
+        ViewModelTask((application as ApplicationTask).repository)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddTaskBinding.inflate(layoutInflater)
@@ -25,12 +31,12 @@ class AddTaskActivity : AppCompatActivity() {
 
         if (intent.hasExtra(TASK_ID)) {
             val taskId = intent.getIntExtra(TASK_ID, 0)
-            TaskDataSource.findId(taskId)?.let {
+            viewModel.findId(taskId)?.observe(this) { it ->
                 binding.tilTitle.text = it.title
                 binding.tilData.text = it.date
                 binding.tilHora.text = it.time
 
-                binding.btnNewTask.text = "Salvar alteracao"
+                binding.btnNewTask.text = getString(R.string.save)
             }
         }
         insertListeners()
@@ -64,21 +70,43 @@ class AddTaskActivity : AppCompatActivity() {
         }
 
         binding.btnNewTask.setOnClickListener {
-            val task = Task(
-                title = binding.tilTitle.text,
-                date = binding.tilData.text,
-                time = binding.tilHora.text,
-                id = intent.getIntExtra(TASK_ID, 0)
-            )
 
-            Thread{
-//                DatabaseTask.getDatabase(this@AddTaskActivity)?.taskDao()?.insertTask(task)
-                TaskDataSource.insertTask(task)
+            val title = binding.tilTitle.text
+            val date = binding.tilData.text
+            val time = binding.tilHora.text
+            val id = intent.getIntExtra(TASK_ID, 0)
 
-            }.start()
 
-            setResult(Activity.RESULT_OK)
-            finish()
+            if (title.isNotEmpty() && date.isNotEmpty()) {
+                val task = Task(title, date, time, id)
+
+                if (intent.hasExtra(TASK_ID)) {
+                    Thread {
+                        viewModel.update(task)
+                    }.start()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.update),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+
+                    Thread {
+                        viewModel.insert(task)
+                    }.start()
+                }
+
+                setResult(Activity.RESULT_OK)
+                finish()
+
+            }
+
+            Toast.makeText(
+                this@AddTaskActivity,
+                getString(R.string.required_fields),
+                Toast.LENGTH_LONG
+            ).show()
+
         }
 
         binding.btnCancel.setOnClickListener { finish() }

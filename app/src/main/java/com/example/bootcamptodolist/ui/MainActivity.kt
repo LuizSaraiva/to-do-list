@@ -5,23 +5,29 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import com.example.bootcamptodolist.database.DatabaseTask
+import android.widget.Toast
+import com.example.bootcamptodolist.R
 import com.example.bootcamptodolist.databinding.ActivityMainBinding
-import com.example.bootcamptodolist.datasource.TaskDataSource
-import com.example.bootcamptodolist.model.Task
+import com.example.bootcamptodolist.application.ApplicationTask
+import com.example.bootcamptodolist.viewmodel.ViewModelTask
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val adapter: AdapterTask by lazy { AdapterTask() }
+    private val viewModel: ViewModelTask by lazy {
+        ViewModelTask((application as ApplicationTask).repository)
+    }
+
+    lateinit var adapterTask:AdapterTask
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.rvMain.adapter = adapter
+        adapterTask = AdapterTask()
+        binding.rvMain.adapter = adapterTask
 
         insertListeners()
 
@@ -30,26 +36,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun insertListeners() {
+
+        adapterTask.listenerEdit = {
+
+            val intent = Intent(this@MainActivity, AddTaskActivity::class.java)
+            intent.putExtra(AddTaskActivity.TASK_ID, it.id)
+            startActivity(intent)
+        }
+
+        adapterTask.listenerDelete = {
+            Thread {
+                viewModel.delete(it)
+            }.start()
+            Toast.makeText(this, getString(R.string.item_delete), Toast.LENGTH_LONG).show()
+            loadList()
+        }
+
         binding.fab.setOnClickListener {
             startActivityForResult(
                 Intent(this@MainActivity, AddTaskActivity::class.java),
                 RESULT_NEW_TASK
             )
-
-            adapter.listenerEdit = {
-
-                val intent = Intent(this@MainActivity, AddTaskActivity::class.java)
-                intent.putExtra(AddTaskActivity.TASK_ID, it.id)
-                startActivity(intent)
-            }
-
-            adapter.listenerDelete = {
-
-                loadList()
-            }
-
-
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -59,21 +68,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadList() {
-        Thread {
-            val list = TaskDataSource.getList()
+        viewModel.listTask.observe(this) {
 
-            //val list = DatabaseTask.getDatabase(this@MainActivity)?.taskDao()?.getAll() ?: mutableListOf()
-
-            runOnUiThread {
-                binding.includeEmptyState.emptyState.visibility = if (list.isEmpty())
+            it?.let {
+                binding.includeEmptyState.emptyState.visibility = if (it.isEmpty())
                     View.VISIBLE else View.GONE
 
-                binding.rvMain.visibility = if (list.isEmpty())
+                binding.rvMain.visibility = if (it.isEmpty())
                     View.GONE else View.VISIBLE
 
-                adapter.submitList(list)
+                adapterTask.setData(it)
+
             }
-        }.start()
+            adapterTask.notifyDataSetChanged ()
+        }
     }
 
     companion object {
