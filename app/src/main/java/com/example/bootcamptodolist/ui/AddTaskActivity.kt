@@ -17,6 +17,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import java.util.*
+import kotlin.concurrent.thread
 
 class AddTaskActivity : AppCompatActivity() {
 
@@ -39,6 +40,8 @@ class AddTaskActivity : AppCompatActivity() {
                 binding.tilHora.text = it.time
                 binding.tilResume.text = it.resume
                 binding.tilDescription.text = it.description
+
+                binding.toolbar.title = getString(R.string.title_edit_task)
 
                 binding.cbStatus.let { cb ->
                     cb.isChecked = it.status
@@ -109,15 +112,15 @@ class AddTaskActivity : AppCompatActivity() {
                 val task = Task(title, date, time, resume, description, status, id)
 
                 if (intent.hasExtra(TASK_ID)) {
-                    Thread {
+                    thread(true) {
                         viewModel.update(task)
-                    }.start()
+                    }
                     Toast.makeText(this, getString(R.string.update), Toast.LENGTH_LONG).show()
                 } else {
 
-                    Thread {
+                    thread(true) {
                         viewModel.insert(task)
-                    }.start()
+                    }
                     Toast.makeText(this@AddTaskActivity, getString(R.string.sucess), Toast.LENGTH_LONG).show()
                 }
 
@@ -126,7 +129,11 @@ class AddTaskActivity : AppCompatActivity() {
 
             } else {
 
-                Toast.makeText(this@AddTaskActivity, getString(R.string.required_fields), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@AddTaskActivity,
+                    getString(R.string.required_fields),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 

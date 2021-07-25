@@ -11,6 +11,7 @@ import com.example.bootcamptodolist.databinding.ActivityMainBinding
 import com.example.bootcamptodolist.application.ApplicationTask
 import com.example.bootcamptodolist.model.Task
 import com.example.bootcamptodolist.viewmodel.ViewModelTask
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         ViewModelTask((application as ApplicationTask).repository)
     }
 
-    lateinit var adapterTask:AdapterTask
+    lateinit var adapterTask: AdapterTask
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +51,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         adapterTask.listenerDelete = {
-            Thread {
+            thread(true) {
                 viewModel.delete(it)
-            }.start()
+            }
             Toast.makeText(this, getString(R.string.item_delete), Toast.LENGTH_LONG).show()
             loadList()
         }
@@ -72,10 +73,10 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == RESULT_NEW_TASK && resultCode == Activity.RESULT_OK) loadList()
     }
 
-    private fun updateStatus(task: Task){
-        Thread {
+    private fun updateStatus(task: Task) {
+        thread(true) {
             viewModel.update(task)
-        }.start()
+        }
     }
 
     private fun loadList() {
@@ -90,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
                 adapterTask.setData(it)
             }
-            adapterTask.notifyDataSetChanged ()
+            adapterTask.notifyDataSetChanged()
         }
     }
 
