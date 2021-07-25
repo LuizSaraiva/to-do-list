@@ -1,5 +1,7 @@
 package com.example.bootcamptodolist.ui
 
+import android.graphics.Color
+import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
@@ -15,6 +17,7 @@ class AdapterTask : RecyclerView.Adapter<AdapterTask.ViewHolderTask>() {
 
     var listenerEdit: (Task) -> Unit = {}
     var listenerDelete: (Task) -> Unit = {}
+    var listenerCheck: (Task) -> Unit = {}
 
     fun setData(listItem: List<Task>) {
         listTask = listItem
@@ -40,6 +43,28 @@ class AdapterTask : RecyclerView.Adapter<AdapterTask.ViewHolderTask>() {
             binding.tvDateTime.text = "${task.date} ${task.time}"
             binding.tvResume.text = task.resume
             binding.ivMore.setOnClickListener { showPopUp(task) }
+            binding.cbFinish.isChecked = task.status
+
+            if (task.status) {
+                binding.clItemTask.setBackgroundColor(Color.GREEN)
+            }else{
+                binding.clItemTask.setBackgroundColor(Color.WHITE)
+            }
+
+            binding.cbFinish.setOnClickListener {
+                if (binding.cbFinish.isChecked) {
+                    binding.clItemTask.setBackgroundColor(Color.GREEN)
+
+                    task.status = true
+                    listenerCheck(task)
+
+                } else {
+                    binding.clItemTask.setBackgroundColor(Color.WHITE)
+
+                    task.status = false
+                    listenerCheck(task)
+                }
+            }
         }
 
         private fun showPopUp(item: Task) {

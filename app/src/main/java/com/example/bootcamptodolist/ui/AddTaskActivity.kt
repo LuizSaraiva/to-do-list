@@ -1,7 +1,9 @@
 package com.example.bootcamptodolist.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bootcamptodolist.R
@@ -37,6 +39,20 @@ class AddTaskActivity : AppCompatActivity() {
                 binding.tilHora.text = it.time
                 binding.tilResume.text = it.resume
                 binding.tilDescription.text = it.description
+
+                binding.cbStatus.let { cb ->
+                    cb.isChecked = it.status
+                    cb.visibility = View.VISIBLE
+                }
+
+                binding.tvStatus.let { tv ->
+                    tv.visibility = View.VISIBLE
+                    if (it.status) {
+                        binding.tvStatus.text = getString(R.string.status_finish)
+                    }
+
+                }
+
                 binding.btnNewTask.text = getString(R.string.save)
             }
         }
@@ -44,6 +60,14 @@ class AddTaskActivity : AppCompatActivity() {
     }
 
     private fun insertListeners() {
+
+        binding.cbStatus.setOnClickListener {
+            if (binding.cbStatus.isChecked) {
+                binding.tvStatus.text = getText(R.string.status_finish)
+            } else {
+                binding.tvStatus.text = (getText(R.string.status_pending))
+            }
+        }
 
         binding.tilData.editText?.setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker().build()
@@ -77,44 +101,32 @@ class AddTaskActivity : AppCompatActivity() {
             val time = binding.tilHora.text
             val resume = binding.tilResume.text
             val description = binding.tilDescription.text
+            val status = binding.cbStatus.isChecked
             val id = intent.getIntExtra(TASK_ID, 0)
 
 
             if (title.isNotEmpty() && date.isNotEmpty()) {
-                val task = Task(title, date, time, resume, description, id)
+                val task = Task(title, date, time, resume, description, status, id)
 
                 if (intent.hasExtra(TASK_ID)) {
                     Thread {
                         viewModel.update(task)
                     }.start()
-                    Toast.makeText(
-                        this,
-                        getString(R.string.update),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(this, getString(R.string.update), Toast.LENGTH_LONG).show()
                 } else {
 
                     Thread {
                         viewModel.insert(task)
                     }.start()
+                    Toast.makeText(this@AddTaskActivity, getString(R.string.sucess), Toast.LENGTH_LONG).show()
                 }
-
-                Toast.makeText(
-                    this@AddTaskActivity,
-                    getString(R.string.sucess),
-                    Toast.LENGTH_LONG
-                ).show()
 
                 setResult(Activity.RESULT_OK)
                 finish()
 
             } else {
 
-                Toast.makeText(
-                    this@AddTaskActivity,
-                    getString(R.string.required_fields),
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(this@AddTaskActivity, getString(R.string.required_fields), Toast.LENGTH_LONG).show()
             }
         }
 

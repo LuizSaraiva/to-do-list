@@ -17,4 +17,6 @@
     <string name="description">Descrição</string>
     <string name="sample_text_resume">Sample text resume</string>
     <string name="sucess">Cadastrado com sucesso!</string>
+    <string name="status_pending">Pendente</string>
+    <string name="status_finish">Finalizado</string>
 </resources>

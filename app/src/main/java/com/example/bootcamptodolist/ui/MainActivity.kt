@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.example.bootcamptodolist.R
 import com.example.bootcamptodolist.databinding.ActivityMainBinding
 import com.example.bootcamptodolist.application.ApplicationTask
+import com.example.bootcamptodolist.model.Task
 import com.example.bootcamptodolist.viewmodel.ViewModelTask
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +37,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun insertListeners() {
+
+        adapterTask.listenerCheck = {
+            updateStatus(it)
+        }
 
         adapterTask.listenerEdit = {
 
@@ -67,6 +72,12 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == RESULT_NEW_TASK && resultCode == Activity.RESULT_OK) loadList()
     }
 
+    private fun updateStatus(task: Task){
+        Thread {
+            viewModel.update(task)
+        }.start()
+    }
+
     private fun loadList() {
         viewModel.listTask.observe(this) {
 
@@ -78,7 +89,6 @@ class MainActivity : AppCompatActivity() {
                     View.GONE else View.VISIBLE
 
                 adapterTask.setData(it)
-
             }
             adapterTask.notifyDataSetChanged ()
         }
